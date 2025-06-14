@@ -2,7 +2,7 @@ import csv
 import random
 
 # Чтение db_id из movies.csv
-movies_file = "movies.csv"
+movies_file = "movies_large_updated.csv"
 valid_movie_ids = set()
 
 with open(movies_file, mode='r', encoding='utf-8') as movies_infile:
@@ -12,8 +12,8 @@ with open(movies_file, mode='r', encoding='utf-8') as movies_infile:
             valid_movie_ids.add(int(row['db_id']))
 
 # Чтение всех транзакций и группировка по пользователям
-input_rating_file = "ratings 2.csv"
-output_rating_file = "ratings_2.csv"
+input_rating_file = "ratings_large.csv"
+output_rating_file = "ratings_large_updated.csv"
 
 # Собираем транзакции по userId, фильтруя только совпадения
 user_transactions = {}
@@ -35,7 +35,7 @@ with open(input_rating_file, mode='r', encoding='utf-8') as infile:
             match_count += 1
 
 # Фильтрация пользователей с вероятностью 50%
-keep_probability = 1
+keep_probability = 0.03
 filtered_transactions = []
 kept_users = 0
 total_users = len(user_transactions)

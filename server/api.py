@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flasgger import Swagger, swag_from
+from flask_cors import CORS
 from marshmallow import Schema, fields, validate, ValidationError
 from services.data_loader import DataLoader
 from services.content_based import ContentBasedFilter
@@ -12,6 +13,7 @@ logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s 
 
 # Initialize Flask and Swagger
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 swagger = Swagger(app)
 
 # Input schema using Marshmallow
@@ -120,8 +122,6 @@ def group_recommendation():
             movieid_groups.append(converted_group)
             all_watched_movie_ids.update(converted_group)
         
-        logging.info(len(all_watched_movie_ids))
-
         # Валидируем существование movieId
         data_loader.validate_movie_ids(all_watched_movie_ids)
 
@@ -133,8 +133,8 @@ def group_recommendation():
 
         # Получаем рекомендации
         recommendations = recommender.get_recommendations(user_ids, all_watched_movie_ids, top_n, weights)
-
-        logging.info(f"Returning {len(recommendations)} recommendations")
+        
+        logging.info(f"Returning {len(recommendations)} unique recommendations")
         return jsonify({
             'recommendations': recommendations,
             'count': len(recommendations)
